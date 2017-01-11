@@ -163,9 +163,9 @@ then
     fi
  
 
-    echo -e "\ncomputing weights for 100 NNPDF3.0 nlo variations\n"
-    iteration=260001
-    lastfile=260100
+    echo -e "\ncomputing weights for 100 PDF4LHC nlo variations\n"
+    iteration=90001
+    lastfile=90100
     counter=2000
     while [ $iteration -le $lastfile ];
     do
@@ -186,7 +186,7 @@ then
 
 
     echo -e "\ncomputing weights for NNPDF 3.0 nlo alphas=0.117 variation\n"
-    iteration=265000
+    iteration=90100
     echo -e "\n PDF set ${iteration}"
     sed -e 's/.*lhans1.*/lhans1 '$iteration'/ ; s/.*lhans2.*/lhans2 '$iteration'/' powheg.input.tmp > powheg.input
     counter=$(( counter + 1 ))
@@ -201,7 +201,7 @@ then
 
 
     echo -e "\ncomputing weights for NNPDF 3.0 nlo alphas=0.119 variation\n"
-    iteration=266000
+    iteration=90102
     echo -e "\n PDF set ${iteration}"
     sed -e 's/.*lhans1.*/lhans1 '$iteration'/ ; s/.*lhans2.*/lhans2 '$iteration'/' powheg.input.tmp > powheg.input
     counter=$(( counter + 1 ))
