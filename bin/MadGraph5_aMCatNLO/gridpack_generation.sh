@@ -509,6 +509,7 @@ if [ "$isnlo" -gt "0" ]; then
   fi
   echo "done" >> makegrid.dat
 
+  exit(0)
   cat makegrid.dat | ./bin/generate_events -n pilotrun
   echo "finished pilot run"
 
