@@ -472,6 +472,11 @@ if [ -e $CARDSDIR/${name}_cuts.f ]; then
   cp $CARDSDIR/${name}_cuts.f ./SubProcesses/cuts.f
 fi
 
+if [ -e $CARDSDIR/${name}_setscales.f ]; then
+  echo "copying custom setscales.f file"
+  cp $CARDSDIR/${name}_setscales.f ./SubProcesses/setscales.f
+fi
+
 if [ -e $CARDSDIR/${name}_FKS_params.dat ]; then
   echo "copying custom FKS_params.dat file"
   cp $CARDSDIR/${name}_FKS_params.dat ./Cards/FKS_params.dat
