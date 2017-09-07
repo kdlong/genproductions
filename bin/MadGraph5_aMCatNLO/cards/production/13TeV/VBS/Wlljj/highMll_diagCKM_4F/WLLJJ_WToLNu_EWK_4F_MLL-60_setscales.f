@@ -82,7 +82,7 @@ cc                 dynamical_scale_choice = 0                                   
 cc      in the run_card (run_card.dat)                                           cc
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cc Pt of leading parton
-         rscale=max(et(P(0,7)), et(P(0,8)))
+         rscale=max(et(P(0,6)), et(P(0,7)))
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 cc      USER-DEFINED SCALE: END OF USER CODE                                     cc
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc

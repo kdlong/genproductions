@@ -468,11 +468,6 @@ if [ -e $CARDSDIR/${name}_FKS_params.dat ]; then
   cp $CARDSDIR/${name}_FKS_params.dat ./Cards/FKS_params.dat
 fi
 
-if [ -e $CARDSDIR/${name}_setscales.f ]; then
-  echo "copying custom setscales.f file"
-  cp $CARDSDIR/${name}_setscales.f ./SubProcesses/setscales.f
-fi
-
 if [ -e $CARDSDIR/${name}_reweight_xsec.f ]; then
   echo "copying custom reweight_xsec.f file"
   cp $CARDSDIR/${name}_reweight_xsec.f ./SubProcesses/reweight_xsec.f
@@ -509,7 +504,6 @@ if [ "$isnlo" -gt "0" ]; then
   fi
   echo "done" >> makegrid.dat
 
-  exit(0)
   cat makegrid.dat | ./bin/generate_events -n pilotrun
   echo "finished pilot run"
 
