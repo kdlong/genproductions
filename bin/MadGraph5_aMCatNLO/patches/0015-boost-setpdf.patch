@@ -2,33 +2,53 @@ diff --git a/Template/LO/Source/PDF/pdf_lhapdf6.cc b/Template/LO/Source/PDF/pdf_
 index 35b34d5..77daf67 100644
 --- a/Template/LO/Source/PDF/pdf_lhapdf6.cc
 +++ b/Template/LO/Source/PDF/pdf_lhapdf6.cc
-@@ -12,6 +12,11 @@
+@@ -12,6 +12,12 @@
  #include "LHAPDF/Version.h"
  #include "LHAPDF/LHAGlue.h"
  
 +#include <boost/shared_ptr.hpp>
 +#include <boost/foreach.hpp>
++#include <boost/version.hpp>
 +#include <boost/algorithm/string/case_conv.hpp>
 +#include <cstring>
 +
  using namespace std;
  
+ 
+@@ -68,6 +74,7 @@
+ 
+     /// Constructor from a PDF set's LHAPDF ID code
+     PDFSetHandler(int lhaid) {
++      std::cerr << "BOOST VERSION IS " << BOOST_VERSION;
+       pair<string,int> set_mem = LHAPDF::lookupPDF(lhaid);
+       // First check that the lookup was successful, i.e. it was a valid ID for the LHAPDF6 set collection
+       if (set_mem.first.empty() || set_mem.second < 0)
  
 diff --git a/Template/NLO/Source/PDF/pdf_lhapdf6.cc b/Template/NLO/Source/PDF/pdf_lhapdf6.cc
 index 35b34d5..77daf67 100644
 --- a/Template/NLO/Source/PDF/pdf_lhapdf6.cc
 +++ b/Template/NLO/Source/PDF/pdf_lhapdf6.cc
-@@ -12,6 +12,11 @@
+@@ -12,6 +12,12 @@
  #include "LHAPDF/Version.h"
  #include "LHAPDF/LHAGlue.h"
  
 +#include <boost/shared_ptr.hpp>
 +#include <boost/foreach.hpp>
++#include <boost/version.hpp>
 +#include <boost/algorithm/string/case_conv.hpp>
 +#include <cstring>
 +
  using namespace std;
  
+ 
+@@ -68,6 +74,7 @@
+ 
+     /// Constructor from a PDF set's LHAPDF ID code
+     PDFSetHandler(int lhaid) {
++      std::cerr << "BOOST VERSION IS " << BOOST_VERSION;
+       pair<string,int> set_mem = LHAPDF::lookupPDF(lhaid);
+       // First check that the lookup was successful, i.e. it was a valid ID for the LHAPDF6 set collection
+       if (set_mem.first.empty() || set_mem.second < 0)
  
 diff --git a/madgraph/iolibs/template_files/pdf_wrap_lhapdf.f b/madgraph/iolibs/template_files/pdf_wrap_lhapdf.f
 index 95b0f49..c24d81c 100644
