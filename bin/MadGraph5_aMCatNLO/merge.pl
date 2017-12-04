@@ -150,6 +150,7 @@ foreach $infile (@infiles) {
 
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
+    # Match entry in init block based on LPRUP
     my @matchinginit = grep { $_->[3] == $oldinit[$i][3] } @currinit[1 .. $#currentinit];  
     if (!@matchinginit) {
       next
