@@ -115,6 +115,17 @@ foreach $infile (@ARGV) {
 $oldxsec        = $infiles[0][2];
 @oldinit        = @{$infiles[0][3]};
 $oldlhe_version = $infiles[0][4];
+
+# Init blocks can have different lengths if the number of subprocesses
+# for which events are produced is different. Take the init block
+# with entries for the largest number of subprocesses
+foreach $infile (@infiles) {
+  if ($#{$infile->[3]} > $#{oldinit}) {
+    $oldxsec = $infile->[2];
+    @oldinit = @{$infile->[3]};
+    $oldlhe_version = $infiles->[4];
+  }
+}
 $totevents = 0;  $totxsec = 0.0;
 foreach $infile (@infiles) {
   print "Input file: $infile->[0]\n";
@@ -134,25 +145,25 @@ foreach $infile (@infiles) {
 
   @currinit = @{$infile->[3]};
   # Same number of lines in <init> block?
-  if ($#oldinit != $#currinit)             { die("Init blocks do not match"); }
+  #if ($#oldinit != $#currinit)             { die("Init blocks do not match"); }
 
   # Same number of entries on first line of <init> block?
   if ($#{$oldinit[0]} != $#{$currinit[0]}) { die("Init blocks do not match"); }
 
   # All entries the same on first line of <init> block?
-  for ($i = 0; $i <= $#{$oldinit[0]}; $i++) {
-    if ($oldinit[0][$i] != $currinit[0][$i])
-      { die("Init blocks do not match"); }
-  }
+  #for ($i = 0; $i <= $#{$oldinit[0]}; $i++) {
+  #  if ($oldinit[0][$i] != $currinit[0][$i])
+  #    { die("Init blocks do not match"); }
+  #}
 
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
-    if ($oldinit[$i] =~ /^<generator/) {
-      if ($oldinit[$i] ne $currinit[$i]) { die("Init blocks do not match"); } 
-      next;
-    }
+    #if ($oldinit[$i] =~ /^<generator/) {
+    #  if ($oldinit[$i] ne $currinit[$i]) { die("Init blocks do not match"); } 
+    #  next;
+    #}
 
-    if ($oldinit[$i][3] != $currinit[$i][3]) { die("Init blocks do not match"); }
+    #if ($oldinit[$i][3] != $currinit[$i][3]) { die("Init blocks do not match"); }
 
     print " xsecup = $currinit[$i][0], xerrup = $currinit[$i][1]\n";
     print " xmaxup = $currinit[$i][2], lprup = $currinit[$i][3]\n";
