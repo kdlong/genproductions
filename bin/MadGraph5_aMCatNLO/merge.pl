@@ -158,15 +158,19 @@ foreach $infile (@infiles) {
 
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
-    #if ($oldinit[$i] =~ /^<generator/) {
-    #  if ($oldinit[$i] ne $currinit[$i]) { die("Init blocks do not match"); } 
-    #  next;
-    #}
+    my @matchinginit = grep { $_->[3] == $oldinit[$i][3] } @currinit[1 .. $#currentinit];  
+    if (!@matchinginit) {
+      next
+    }
+    if ($oldinit[$i] =~ /^<generator/) {
+      if ($oldinit[$i] ne $matchinginit[$i]) { die("Init blocks do not match"); } 
+      next;
+    }
 
-    #if ($oldinit[$i][3] != $currinit[$i][3]) { die("Init blocks do not match"); }
+    if ($oldinit[$i][3] != $matchinginit[$i][3]) { die("Init blocks do not match"); }
 
-    print " xsecup = $currinit[$i][0], xerrup = $currinit[$i][1]\n";
-    print " xmaxup = $currinit[$i][2], lprup = $currinit[$i][3]\n";
+    print " xsecup = $matchinginit[$i][0], xerrup = $matchinginit[$i][1]\n";
+    print " xmaxup = $matchinginit[$i][2], lprup = $matchinginit[$i][3]\n";
 
     # XSECUP = sum(xsecup * no.events) / tot.events
     # XERRUP = sqrt( sum(sigma^2 * no.events^2) ) / tot.events
@@ -174,13 +178,13 @@ foreach $infile (@infiles) {
     # Here we temporarily store:
     #  sum(xsecup * no.events)
     #  sum(sigma^2 * no.events^2)
-    if (\$oldinit == \$currinit) {
+    if (\$oldinit == \$matchinginit) {
       $oldinit[$i][0] *= $infile->[1];
       $oldinit[$i][1] *= $oldinit[$i][1] * $infile->[1]**2;
 
     } else {
-      $oldinit[$i][0] += ($currinit[$i][0] * $infile->[1]);
-      $oldinit[$i][1] += $currinit[$i][1]**2 * $infile->[1]**2;
+      $oldinit[$i][0] += ($matchinginit[$i][0] * $infile->[1]);
+      $oldinit[$i][1] += $matchinginit[$i][1]**2 * $infile->[1]**2;
 
     }
 
