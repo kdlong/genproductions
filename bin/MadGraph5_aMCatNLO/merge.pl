@@ -144,17 +144,9 @@ foreach $infile (@infiles) {
   }
 
   @currinit = @{$infile->[3]};
-  # Same number of lines in <init> block?
-  #if ($#oldinit != $#currinit)             { die("Init blocks do not match"); }
 
   # Same number of entries on first line of <init> block?
   if ($#{$oldinit[0]} != $#{$currinit[0]}) { die("Init blocks do not match"); }
-
-  # All entries the same on first line of <init> block?
-  #for ($i = 0; $i <= $#{$oldinit[0]}; $i++) {
-  #  if ($oldinit[0][$i] != $currinit[0][$i])
-  #    { die("Init blocks do not match"); }
-  #}
 
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
