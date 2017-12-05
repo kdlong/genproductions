@@ -125,12 +125,15 @@ my %uniqentries;
 foreach $infile (@infiles) {
   for($i=1; $i < scalar(@${infile}); $i++) {
     if ($infile->[3][$i] =~ /^<generator/) {
-        push(@oldinit, $infile[3][$i]);
+        push(@oldinit, $infile->[3][$i]);
+        next;
     }
     $uniqentries{$infile->[3][$i][3]} = $infile->[3][$i];
   }
 }
 push(@oldinit, (values %uniqentries));
+print "Old init is\n";
+print Dumper(\@oldinit);
 
 $totevents = 0;  $totxsec = 0.0;
 foreach $infile (@infiles) {
@@ -172,7 +175,7 @@ foreach $infile (@infiles) {
       if (${oldinit[$i][3]} eq ${currinit[$j][3]}) {
         $matchingsubprocess = ${currinit[$j]};
         print "Current init entry";
-        print Dumper(\@currinit[$j]);
+        print Dumper(\$currinit[$j]);
       }
     }
     if (!@matchingsubprocess) {
