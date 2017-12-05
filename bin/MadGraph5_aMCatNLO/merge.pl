@@ -120,10 +120,11 @@ $oldlhe_version = $infiles[0][4];
 # is present for any of the files. Take the first occurance 
 # of the subprocess from all the files. 
 my %uniqentries;
+my $genblock;
 foreach $infile (@infiles) {
   for($i=1; $i < scalar(@${infile}); $i++) {
     if ($infile->[3][$i] =~ /^<generator/) {
-        push(@oldinit, $infile->[3][$i]);
+        $genblock = $infile->[3][$i];
         next;
     }
     # Important to take first entry, as this is treated
@@ -133,7 +134,10 @@ foreach $infile (@infiles) {
     }
   }
 }
-push(@oldinit, (values %uniqentries));
+# Maintain MadGraph's convention of reverse sorting by LPRUP
+my @initentry = reverse sort { $a->[3] <=> $b->[3] } values %uniqentries;
+push(@oldinit, @initentry);
+push(@oldinit, $genblock);
 
 $totevents = 0;  $totxsec = 0.0;
 foreach $infile (@infiles) {
