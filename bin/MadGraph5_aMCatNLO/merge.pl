@@ -118,9 +118,8 @@ $oldxsec        = $infiles[0][2];
 $oldlhe_version = $infiles[0][4];
 
 # Form a composite init block by including any subprocess that 
-# is present for any of the files
-#print Dumper(\@infiles);
-
+# is present for any of the files. Take the first occurance 
+# of the subprocess from all the files. 
 my %uniqentries;
 foreach $infile (@infiles) {
   for($i=1; $i < scalar(@${infile}); $i++) {
@@ -136,8 +135,6 @@ foreach $infile (@infiles) {
   }
 }
 push(@oldinit, (values %uniqentries));
-print "Old init is\n";
-print Dumper(\@oldinit);
 
 $totevents = 0;  $totxsec = 0.0;
 foreach $infile (@infiles) {
@@ -164,7 +161,6 @@ foreach $infile (@infiles) {
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
     # Match entry in init block based on LPRUP
-    print "current init";
     print Dumper(\@currinit);
     my @matchingsubprocess = ();
     if ($oldinit[$i] =~ /^<generator/) {
@@ -174,20 +170,13 @@ foreach $infile (@infiles) {
       if ($currinit[$j] =~ /^<generator/) {
         next
       }
-      print "old is", $oldinit[$i][3];
-      print "new is", $currinit[$j][3], "\n"; 
       if (${oldinit[$i][3]} eq ${currinit[$j][3]}) {
         $matchingsubprocess = ${currinit[$j]};
-        print "Current init entry";
-        print Dumper(\$currinit[$j]);
       }
     }
     if (!@matchingsubprocess) {
       next
     }
-    print "Matching subprocess";
-    print Dumper(\@matchingsubprocess);
-    print $matchingsubprocess[3];
 
     if ($oldinit[$i] =~ /^<generator/) {
       if ($oldinit[$i] ne $matchingsubprocess) { die("Init blocks do not match"); } 
