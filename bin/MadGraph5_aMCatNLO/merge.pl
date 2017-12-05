@@ -120,7 +120,7 @@ $oldlhe_version = $infiles[0][4];
 # Form a composite init block by including any subprocess that 
 # is present for any of the files
 #print Dumper(\@infiles);
-#
+
 my %uniqentries;
 foreach $infile (@infiles) {
   for($i=1; $i < scalar(@${infile}); $i++) {
@@ -128,7 +128,11 @@ foreach $infile (@infiles) {
         push(@oldinit, $infile->[3][$i]);
         next;
     }
-    $uniqentries{$infile->[3][$i][3]} = $infile->[3][$i];
+    # Important to take first entry, as this is treated
+    # differently in the next loop
+    elsif (!exists $uniqentries{$infile->[3][$i][3]}) {
+      $uniqentries{$infile->[3][$i][3]} = $infile->[3][$i];
+    }
   }
 }
 push(@oldinit, (values %uniqentries));
