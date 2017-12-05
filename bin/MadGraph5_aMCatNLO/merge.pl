@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+use Data::Dumper;
 
 ################################################################################
 # merge.pl
@@ -113,19 +114,24 @@ foreach $infile (@ARGV) {
 # Check/compute cross-sections, totals and unit weight
 ###########################################################################
 $oldxsec        = $infiles[0][2];
-@oldinit        = @{$infiles[0][3]};
+@oldinit        = ($infiles[0][3][0]);
 $oldlhe_version = $infiles[0][4];
 
-# Init blocks can have different lengths if the number of subprocesses
-# for which events are produced is different. Take the init block
-# with entries for the largest number of subprocesses
+# Form a composite init block by including any subprocess that 
+# is present for any of the files
+#print Dumper(\@infiles);
+#
+my %uniqentries;
 foreach $infile (@infiles) {
-  if ($#{$infile->[3]} > $#{oldinit}) {
-    $oldxsec = $infile->[2];
-    @oldinit = @{$infile->[3]};
-    $oldlhe_version = $infiles->[4];
+  for($i=1; $i < scalar(@${infile}); $i++) {
+    if ($infile->[3][$i] =~ /^<generator/) {
+        push(@oldinit, $infile[3][$i]);
+    }
+    $uniqentries{$infile->[3][$i][3]} = $infile->[3][$i];
   }
 }
+push(@oldinit, (values %uniqentries));
+
 $totevents = 0;  $totxsec = 0.0;
 foreach $infile (@infiles) {
   print "Input file: $infile->[0]\n";
@@ -151,19 +157,40 @@ foreach $infile (@infiles) {
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
     # Match entry in init block based on LPRUP
-    my @matchinginit = grep { $_->[3] == $oldinit[$i][3] } @currinit[1 .. $#currentinit];  
-    if (!@matchinginit) {
+    print "current init";
+    print Dumper(\@currinit);
+    my @matchingsubprocess = ();
+    if ($oldinit[$i] =~ /^<generator/) {
       next
     }
+    for ($j = 1; $j <= $#currinit; $j++) {
+      if ($currinit[$j] =~ /^<generator/) {
+        next
+      }
+      print "old is", $oldinit[$i][3];
+      print "new is", $currinit[$j][3], "\n"; 
+      if (${oldinit[$i][3]} eq ${currinit[$j][3]}) {
+        $matchingsubprocess = ${currinit[$j]};
+        print "Current init entry";
+        print Dumper(\@currinit[$j]);
+      }
+    }
+    if (!@matchingsubprocess) {
+      next
+    }
+    print "Matching subprocess";
+    print Dumper(\@matchingsubprocess);
+    print $matchingsubprocess[3];
+
     if ($oldinit[$i] =~ /^<generator/) {
-      if ($oldinit[$i] ne $matchinginit[$i]) { die("Init blocks do not match"); } 
+      if ($oldinit[$i] ne $matchingsubprocess) { die("Init blocks do not match"); } 
       next;
     }
 
-    if ($oldinit[$i][3] != $matchinginit[$i][3]) { die("Init blocks do not match"); }
+    if ($oldinit[$i][3] != $matchingsubprocess[3]) { die("Init blocks do not match"); }
 
-    print " xsecup = $matchinginit[$i][0], xerrup = $matchinginit[$i][1]\n";
-    print " xmaxup = $matchinginit[$i][2], lprup = $matchinginit[$i][3]\n";
+    print " xsecup = $matchingsubprocess[0], xerrup = $matchingsubprocess[1]\n";
+    print " xmaxup = $matchingsubprocess[2], lprup = $matchingsubprocess[3]\n";
 
     # XSECUP = sum(xsecup * no.events) / tot.events
     # XERRUP = sqrt( sum(sigma^2 * no.events^2) ) / tot.events
@@ -171,13 +198,13 @@ foreach $infile (@infiles) {
     # Here we temporarily store:
     #  sum(xsecup * no.events)
     #  sum(sigma^2 * no.events^2)
-    if (\$oldinit == \$matchinginit) {
+    if (\$oldinit == \$matchingsubprocess) {
       $oldinit[$i][0] *= $infile->[1];
       $oldinit[$i][1] *= $oldinit[$i][1] * $infile->[1]**2;
 
     } else {
-      $oldinit[$i][0] += ($matchinginit[$i][0] * $infile->[1]);
-      $oldinit[$i][1] += $matchinginit[$i][1]**2 * $infile->[1]**2;
+      $oldinit[$i][0] += ($matchingsubprocess[0] * $infile->[1]);
+      $oldinit[$i][1] += $matchingsubprocess[1]**2 * $infile->[1]**2;
 
     }
 
