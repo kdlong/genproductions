@@ -1,5 +1,4 @@
 #!/usr/bin/perl -w
-use Data::Dumper;
 
 ################################################################################
 # merge.pl
@@ -161,25 +160,24 @@ foreach $infile (@infiles) {
   # Create new init block (overwrite first file's init block data)
   for ($i = 1; $i <= $#oldinit; $i++) {
     # Match entry in init block based on LPRUP
-    print Dumper(\@currinit);
     my @matchingsubprocess = ();
     if ($oldinit[$i] =~ /^<generator/) {
       next
     }
     for ($j = 1; $j <= $#currinit; $j++) {
       if ($currinit[$j] =~ /^<generator/) {
-        next
+        next;
       }
-      if (${oldinit[$i][3]} eq ${currinit[$j][3]}) {
-        $matchingsubprocess = ${currinit[$j]};
+      if (${oldinit[$i][3]} == ${currinit[$j][3]}) {
+        push(@matchingsubprocess, @{$currinit[$j]});
       }
     }
-    if (!@matchingsubprocess) {
+    if (scalar(@matchingsubprocess) == 0) {
       next
     }
 
     if ($oldinit[$i] =~ /^<generator/) {
-      if ($oldinit[$i] ne $matchingsubprocess) { die("Init blocks do not match"); } 
+      if ($oldinit[$i] ne @matchingsubprocess) { die("Init blocks do not match"); } 
       next;
     }
 
@@ -194,18 +192,22 @@ foreach $infile (@infiles) {
     # Here we temporarily store:
     #  sum(xsecup * no.events)
     #  sum(sigma^2 * no.events^2)
-    if (\$oldinit == \$matchingsubprocess) {
+    my $identicalentry = 1;
+    for ($j = 0; $j <= $#matchingsubprocess; $j++) {
+      if ($matchingsubprocess[$j] != $oldinit[$i][$j]) {
+         $identicalentry = 0;
+      }
+    }
+    if ($identicalentry) {
       $oldinit[$i][0] *= $infile->[1];
       $oldinit[$i][1] *= $oldinit[$i][1] * $infile->[1]**2;
-
     } else {
       $oldinit[$i][0] += ($matchingsubprocess[0] * $infile->[1]);
       $oldinit[$i][1] += $matchingsubprocess[1]**2 * $infile->[1]**2;
-
     }
 
     # XMAXUP = max(xmaxup)
-    $oldinit[$i][2] = max($oldinit[$i][2], $currinit[$i][2]);
+    $oldinit[$i][2] = max($oldinit[$i][2], $matchingsubprocess[2]);
   }
 
   # Total number of events and total cross-section
