@@ -122,7 +122,7 @@ $oldlhe_version = $infiles[0][4];
 my %uniqentries;
 my $genblock;
 foreach $infile (@infiles) {
-  for($i=1; $i < scalar(@${infile}); $i++) {
+  for($i=1; $i < scalar(@{$infile->[3]}); $i++) {
     if ($infile->[3][$i] =~ /^<generator/) {
         $genblock = $infile->[3][$i];
         next;
