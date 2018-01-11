@@ -118,7 +118,6 @@ make_gridpack () {
     
       cd $MGBASEDIRORIG
       cat $PRODHOME/patches/*.patch | patch -p1
-      exit 1
     
       if [ -e $CARDSDIR/${name}_loop_filter.py ]; then
         echo "Acitvating custom user loop filter"
