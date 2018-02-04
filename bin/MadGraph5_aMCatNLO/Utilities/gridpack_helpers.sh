@@ -56,3 +56,44 @@ prepare_run_card () {
         echo "${nFlavorScheme} = maxjetflavor" >> ./Cards/run_card.dat 
     fi
 }
+
+# Run reweight step, explicitly compiling subprocesses
+do_reweight () { 
+    isnlo=$1
+    WORKDIR=$2 
+    CMSSW_VERSION=$3
+    cd $WORKDIR
+    echo "preparing reweighting step"
+    if "$isnlo" -eq "0" ]; then
+        mkdir -p madevent/Events/pilotrun
+        cp $WORKDIR/unweighted_events.lhe.gz madevent/Events/pilotrun
+        cd madevent
+        config=./madevent/Cards/me5_configuration.txt
+    else
+        config=./Cards/amcatnlo_configuration.txt
+    fi
+
+    if [ CMSSW_VERSION == "CMSSW_7_1*" ]; then
+        echo "f2py_compiler=" `which gfortran` >> ./madevent/Cards/me5_configuration.txt
+        #need to set library path or f2py won't find libraries
+        export LIBRARY_PATH=$LD_LIBRARY_PATH
+    fi
+
+    if [ "$isnlo" -ne "0" ]; then
+        ./bin/madevent --debug reweight pilotrun -f
+    else
+        ./bin/aMCatNLO --debug reweight pilotrun -f
+    fi
+
+    # Explicitly compile all subprocesses
+    for file in $(ls -d rwgt/*/SubProcesses/P*); do
+        echo "Compiling subprocess $(basename $file)"
+        cd $file
+        for i in 2 3; do
+            MENUM=$i make matrix${i}py.so >& /dev/null
+            echo "Library MENUM=$i compiled with status $?"
+        done
+        cd -
+    done
+    cd ..      
+}

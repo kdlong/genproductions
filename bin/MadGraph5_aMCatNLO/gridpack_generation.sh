@@ -575,7 +575,7 @@ make_gridpack () {
     
     
     #clean unneeded files for generation
-    ${helpers_dir}/cleangridmore.sh
+    #${helpers_dir}/cleangridmore.sh
     
     #
     #Plan to decay events from external tarball?
