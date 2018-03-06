@@ -30,7 +30,7 @@ set gauge Feynman
 import model sm-lepton_masses
 
 define p = g u c d s u~ c~ d~ s~ 
-define j = p b b~
+define j = p
 define l+ = e+ mu+ ta+
 define l- = e- mu- ta-
 define vl = ve vm vt

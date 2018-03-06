@@ -1,0 +1,13 @@
+--- a/Template/LO/SubProcesses/cuts.f	2017-08-16 17:25:24.000000000 -0500
++++ b/Template/LO/SubProcesses/cuts.f	2018-02-17 16:41:34.302042174 -0600
+@@ -1076,8 +1076,8 @@
+ C-- NOW APPLY THE CUT I            
+ 
+             if (abs(rap(p(0,hardj1))) .lt. xetamin
+-     &       .or.abs(rap(p(0,hardj2))) .lt. xetamin
+-     &       .or.rap(p(0,hardj1))*rap(p(0,hardj2)) .gt.0d0) then
++     &       .or.abs(rap(p(0,hardj2))) .lt. xetamin) then
++C     &       .or.rap(p(0,hardj1))*rap(p(0,hardj2)) .gt.0d0) then
+              passcuts=.false.
+              return
+             endif
