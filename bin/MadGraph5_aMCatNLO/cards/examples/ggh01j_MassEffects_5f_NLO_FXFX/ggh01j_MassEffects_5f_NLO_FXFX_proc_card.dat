@@ -6,6 +6,5 @@ import model HC_NLO_X0_UFO-heft
 
 generate p p > x0 [QCD]
 add process p p > x0 j / t t~ [QCD]
-add process p p > x0 j j / t t~ QED<=1 [QCD] --add
 
-output ggh012j_MassEffects_5f_NLO_FXFX -nojpeg
+output ggh01j_MassEffects_5f_NLO_FXFX -nojpeg
