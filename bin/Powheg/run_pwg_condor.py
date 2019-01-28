@@ -63,15 +63,10 @@ def prepareCondorScript( tag, i, folderName, queue, SCALE = '0' ):
  
    f.close()
 
+   template_dict["additional_config"] = ""
    if os.path.exists('additional.condorConf') :
-       filenamenew = 'run_' + tag + 'new.condorConf'
-       ff = open('mergeCondorConf.sh', 'w')
-       ff.write('#!/bin/bash \n \n')
-       ff.write('mv ' + filename + ' ' + filenamenew + '\n')
-       ff.write('cat ' + filenamenew + ' additional.condorConf > ' + filename + '\n')
-       ff.write('rm -f ' + filenamenew + '\n') 
-       ff.close()
-       runCommand('source mergeCondorConf.sh')
+       input_file = open('additional.condorConf', 'r')
+       template_dict["additional_config"] = "\n".join(extra_config.readlines())
 
    return filename
 
